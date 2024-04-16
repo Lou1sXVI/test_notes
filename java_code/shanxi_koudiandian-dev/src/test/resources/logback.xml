@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    scan: 设为true时，配置文件如果发生改变，将会重新加载，默认值为true
+    scanPeriod: 设置检测配置文件是否有修改的时间间隔，默认单位为毫秒，当scan为true时生效。默认时间为1分钟。
+    debug:当此属性为true时，将打印出logback内部日志信息，默认值为false
+ -->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <property name="LOG_ROOT" value="logs/"/>
+    <property name="SVC_NAME" value="robot-test"/>
+
+    <appender name="AllLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+            <!--<fileNamePattern>${LOG_ROOT}${HOSTNAME}.${SVC_NAME}.%d{yyyy-MM-dd-HH}.log</fileNamePattern>-->
+        <!--</rollingPolicy>-->
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <fileNamePattern>${LOG_ROOT}${HOSTNAME}.${SVC_NAME}.%d{yyyy-MM-dd-HH}-%i.log</fileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>30</MaxHistory>
+            <!--日志文件最大的大小 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+
+        <encoder charset="UTF8">
+            <pattern>%d{HH:mm:ss.SSS} %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logging.stdout.appender.level}</level>
+        </filter>
+        <encoder charset="UTF8">
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.smzy.commonservice" level="WARN" addtivity="false"/>
+
+    <root level="${logging.root.level}">
+        <appender-ref ref="AllLog"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
